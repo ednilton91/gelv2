@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gel massageador viva sem dor - PRO</title>
+    <style>
+        *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #e5e7eb; }
+        html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+        body { margin: 0; line-height: inherit; font-family: 'Roboto', sans-serif; background-color: #f0f2f5; color: #333; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .flex { display: flex; } .grid { display: grid; } .hidden { display: none; }
+        .flex-col { flex-direction: column; } .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; } .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; }
+        .p-2 { padding: 0.5rem; } .p-3 { padding: 0.75rem; } .p-4 { padding: 1rem; } .p-5 { padding: 1.25rem; } .p-6 { padding: 1.5rem; }
+        .m-0 { margin: 0; } .mt-2 { margin-top: 0.5rem; } .mt-4 { margin-top: 1rem; } .mt-6 { margin-top: 1.5rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1rem; } .mb-6 { margin-bottom: 1.5rem; }
+        .bg-teal-600 { background-color: #008080; } .bg-teal-700 { background-color: #006666; } .bg-teal-800 { background-color: #004d4d; }
+        .bg-orange-500 { background-color: #f97316; } .bg-green-600 { background-color: #16a34a; } .bg-red-500 { background-color: #ef4444; } .bg-red-600 { background-color: #dc2626; }
+        .text-white { color: #fff; } .text-teal-700 { color: #006666; } .text-teal-800 { color: #004d4d; } .text-orange-600 { color: #ea580c; } .text-red-600 { color: #dc2626; }
+        .screen { display: none; min-height: 100vh; animation: fadeIn 0.2s; }
+        .active { display: block; }
+        .teal-header { background-color: #008080; color: white; position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; transition: transform 0.1s; border-left: 4px solid transparent; }
+        .card:active { transform: scale(0.98); }
+        input, textarea, select { border: 2px solid #e2e8f0; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 10px; font-size: 16px; outline: none; background: white; }
+        input:focus { border-color: #008080; }
+        button { cursor: pointer; border-radius: 0.75rem; font-weight: bold; transition: all 0.2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; align-items: center; justify-content: center; padding: 15px; backdrop-filter: blur(2px); }
+        .modal.show { display: flex; }
+        .tab-btn { flex: 1; padding: 12px; font-weight: bold; font-size: 11px; text-align: center; border-bottom: 3px solid transparent; color: #666; white-space: nowrap; transition: 0.3s; cursor: pointer; }
+        .tab-active { border-bottom-color: #008080; color: #008080; background: #f0fdfa; }
+        .low-stock-alert { background: #fee2e2; color: #b91c1c; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; }
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; bottom: 30px; transform: translateX(-50%); }
+        #toast.show { visibility: visible; animation: fadeinout 2.5s; }
+        @keyframes fadeinout { 0%, 100% { bottom: 0; opacity: 0; } 10%, 90% { bottom: 30px; opacity: 1; } }
+        .vence-hoje-anim { border: 2px solid #ef4444 !important; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+        .font-black { font-weight: 900; } .uppercase { text-transform: uppercase; } .italic { font-style: italic; }
+        
+        .relative-wrapper { position: relative; width: 100%; }
+        .sugestoes-box { 
+            position: absolute; top: 100%; left: 0; right: 0; 
+            background: white; border: 2px solid #008080; border-top: none;
+            border-radius: 0 0 8px 8px; z-index: 100; display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: -10px;
+        }
+        .sugestao-item { 
+            padding: 12px; border-bottom: 1px solid #f3f4f6; 
+            font-size: 14px; color: #1f2937; cursor: pointer; font-weight: bold;
+        }
+        .sugestao-item:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
+        .sugestao-item:active { background-color: #f0fdfa; }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div id="menu" class="screen active">
+    <header class="teal-header p-6 text-center uppercase">
+        <h1 class="font-black" style="font-size: 1.25rem; letter-spacing: -0.05em;">Gel massageador viva sem dor</h1>
+    </header>
+    <div class="p-6 grid gap-4">
+        <button onclick="irPara('venda')" class="bg-teal-600 text-white p-5 shadow-lg flex items-center justify-between">
+            <span>🛒 NOVA VENDA</span> <span>✚</span>
+        </button>
+        <button onclick="irPara('relatorios')" class="bg-teal-600 text-white p-5 shadow-lg flex items-center justify-between">
+            <span>📊 FINANCEIRO / VENDAS</span> <span>📈</span>
+        </button>
+        <button onclick="irPara('lista_cli')" class="bg-white text-teal-700 border-2 p-5 shadow-lg flex items-center justify-between" style="border-color: #008080;">
+            <span>👥 CLIENTES</span> <span>👤</span>
+        </button>
+        <button onclick="irPara('lista_prod')" class="bg-white text-teal-700 border-2 p-5 shadow-lg flex items-center justify-between" style="border-color: #008080;">
+            <span>📦 PRODUTOS / ESTOQUE</span> <span>📦</span>
+        </button>
+        <button onclick="irPara('config')" class="bg-red-600 text-white p-4 mt-6 flex items-center justify-center gap-2 italic" style="font-size: 0.875rem; background-color: #374151;">
+            💾 CONFIGURAÇÕES / BACKUP
+        </button>
+    </div>
+</div>
+
+<div id="venda" class="screen">
+    <header class="teal-header p-4 flex items-center gap-4">
+        <span style="font-size: 1.5rem; cursor: pointer;" onclick="limparVenda(); irPara('menu')">⬅</span>
+        <span class="font-bold italic" style="font-size: 1.25rem;">Lançar Venda</span>
+    </header>
+    <div class="p-4">
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div>
+                <label style="font-size: 10px; font-weight: bold; color: #6b7280; text-transform: uppercase;">Data da Venda</label>
+                <input type="date" id="v_data_venda">
+            </div>
+            <div>
+                <label style="font-size: 10px; font-weight: bold; color: #dc2626; text-transform: uppercase;">Vencimento (Fiado)</label>
+                <input type="date" id="v_venc_calendario">
+            </div>
+        </div>
+
+        <label style="font-size: 10px; font-weight: bold; color: #6b7280; text-transform: uppercase;">Selecionar Cliente</label>
+        <div class="relative-wrapper">
+            <input type="text" id="v_cli" placeholder="Pesquisar nome..." autocomplete="off" oninput="sugerir(this, 'clientes', 'sug_cli')">
+            <div id="sug_cli" class="sugestoes-box"></div>
+        </div>
+        
+        <div class="p-3 mb-4" style="background-color: #f0fdfa; border: 1px solid #99f6e4; border-radius: 0.5rem;">
+            <p style="font-size: 10px; font-weight: bold; color: #0f766e; text-transform: uppercase; margin-bottom: 0.5rem;">🛒 Do Estoque</p>
+            <div class="flex gap-2">
+                <div style="flex: 1;" class="relative-wrapper">
+                    <input type="text" id="v_prod" placeholder="Produto" class="m-0" autocomplete="off" oninput="sugerir(this, 'produtos', 'sug_prod')">
+                    <div id="sug_prod" class="sugestoes-box"></div>
+                </div>
+                <div style="width: 80px;"><input type="number" id="v_qtd" placeholder="Qtd" class="m-0"></div>
+            </div>
+        </div>
+
+        <div class="p-3 mb-4" style="background-color: #fffaf0; border: 1px solid #fed7aa; border-radius: 0.5rem;">
+            <p style="font-size: 10px; font-weight: bold; color: #c2410c; text-transform: uppercase; margin-bottom: 0.5rem;">🎁 Venda Avulsa (Novo/Extra)</p>
+            <div class="flex flex-col gap-1">
+                <input type="text" id="v_prod_avulso" placeholder="Nome do produto" style="margin-bottom: 0.25rem;">
+                <div class="flex gap-2">
+                    <input type="number" id="v_qtd_avulso" placeholder="Qtd" class="m-0">
+                    <input type="number" id="v_val_avulso" step="0.01" placeholder="Preço Unit. R$" class="m-0">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="addCarrinho()" class="bg-orange-500 text-white p-4 mb-4 shadow-lg italic" style="width: 100%;">+ ADICIONAR AO CARRINHO</button>
+        
+        <div class="card mb-4 italic" style="background-color: #f9fafb; min-height: 80px; font-size: 0.875rem; border: 1px solid #e5e7eb;">
+            <div class="flex justify-between mb-2 pb-1" style="border-bottom: 1px solid #e5e7eb;">
+                <p style="font-weight: bold; color: #4b5563;">ITENS SELECIONADOS:</p>
+                <button onclick="if(confirm('Esvaziar carrinho?')) resetItens()" style="color: #ef4444; font-size: 10px; background: transparent; text-transform: uppercase;">Limpar Itens</button>
+            </div>
+            <div id="itens_venda"></div>
+        </div>
+
+        <div id="total_venda_txt" class="font-black mb-6" style="font-size: 2.25rem; text-align: center; color: #004d4d; font-family: monospace;">R$ 0,00</div>
+        
+        <div class="grid gap-4" style="grid-template-columns: 1fr 1fr; padding-bottom: 2rem;">
+            <button onclick="finalizar(true)" class="bg-green-600 text-white p-4 shadow-lg uppercase">PAGO</button>
+            <button onclick="finalizar(false)" class="bg-red-500 text-white p-4 shadow-lg uppercase">FIADO</button>
+        </div>
+    </div>
+</div>
+
+<div id="relatorios" class="screen">
+    <header class="teal-header p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-4">
+            <span style="font-size: 1.5rem; cursor: pointer;" onclick="irPara('menu')">⬅</span>
+            <span class="font-bold italic" style="font-size: 1.25rem;">Financeiro</span>
+        </div>
+        <span style="font-size: 1.5rem; cursor: pointer;" onclick="irPara('venda')">✚</span>
+    </header>
+    <div class="p-4">
+        <div class="grid gap-2 mb-2 text-white" style="grid-template-columns: 1fr 1fr;">
+            <div class="bg-green-600 p-2 shadow relative" style="border-radius: 0.5rem; text-align: center;">
+                <p style="font-size: 9px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">Recebido Hoje</p>
+                <p id="f_rec" class="font-black" style="font-size: 0.875rem;">R$ 0,00</p>
+                <button onclick="zerarCaixa()" class="flex items-center justify-center absolute shadow-lg" style="top: -4px; right: -4px; background: white; color: #dc2626; border-radius: 9999px; width: 20px; height: 20px; border: 1px solid #fee2e2; font-size: 9px;">🧹</button>
+            </div>
+            <div class="bg-red-600 p-2 shadow relative" style="border-radius: 0.5rem; text-align: center;">
+                <p style="font-size: 9px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">Vence Hoje/Atrasados</p>
+                <p id="f_vence_hoje" class="font-black" style="font-size: 0.875rem;">R$ 0,00</p>
+                <span class="flex items-center justify-center absolute shadow" style="top: -4px; right: -4px; background: white; color: #f97316; border-radius: 9999px; width: 20px; height: 20px; border: 1px solid #ffedd5; font-size: 9px;">📅</span>
+            </div>
+            <div class="bg-teal-800 p-2 shadow" style="border-radius: 0.5rem; text-align: center; background-color: #ea580c;">
+                <p style="font-size: 9px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">Pendente (Fiado)</p>
+                <p id="f_pen_total" class="font-black" style="font-size: 0.875rem;">R$ 0,00</p>
+            </div>
+            <div class="bg-teal-800 p-2 shadow relative" style="border-radius: 0.5rem; text-align: center;">
+                <p style="font-size: 9px; text-transform: uppercase; font-weight: bold; opacity: 0.8;">Lucro Real</p>
+                <p id="f_lucro" class="font-black" style="font-size: 0.875rem; color: #fde047;">R$ 0,00</p>
+                <button onclick="zerarLucroManual()" class="flex items-center justify-center absolute shadow-lg" style="top: -4px; right: -4px; background: white; color: #004d4d; border-radius: 9999px; width: 20px; height: 20px; border: 1px solid #ccfbf1; font-size: 9px;">🔄</button>
+            </div>
+        </div>
+
+        <div class="flex bg-white" style="border-radius: 0.5rem 0.5rem 0 0; border-bottom: 1px solid #e5e7eb; overflow-x: auto;">
+            <div id="tab_pend" onclick="setTab('pend')" class="tab-btn uppercase">Pendentes</div>
+            <div id="tab_hoje" onclick="setTab('hoje')" class="tab-btn uppercase" style="color: #dc2626;">Vence Hoje</div>
+            <div id="tab_paga" onclick="setTab('paga')" class="tab-btn uppercase">Pagas</div>
+            <div id="tab_all" onclick="setTab('all')" class="tab-btn uppercase">Todas</div>
+        </div>
+        <input type="text" id="busca_venda" oninput="drawVendas()" placeholder="🔍 Filtrar cliente..." class="mt-2">
+        <div id="list_vendas_box" class="flex flex-col gap-3 mt-2" style="padding-bottom: 40px;"></div>
+    </div>
+</div>
+
+<div id="lista_cli" class="screen">
+    <header class="teal-header p-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <span style="font-size: 1.5rem; cursor: pointer;" onclick="irPara('menu')">⬅</span>
+            <span class="font-bold italic" style="font-size: 1.25rem;">Clientes</span>
+        </div>
+        <span style="font-size: 1.8rem; cursor: pointer;" onclick="abrirCliModal()">✚</span>
+    </header>
+    <div class="p-4">
+        <input type="text" oninput="drawCli(this.value)" placeholder="🔍 Buscar nome ou endereço...">
+        <div id="list_cli_box" class="flex flex-col gap-2"></div>
+    </div>
+</div>
+
+<div id="lista_prod" class="screen">
+    <header class="teal-header p-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <span style="font-size: 1.5rem; cursor: pointer;" onclick="irPara('menu')">⬅</span>
+            <span class="font-bold italic" style="font-size: 1.25rem;">Estoque</span>
+        </div>
+        <span style="font-size: 1.8rem; cursor: pointer;" onclick="abrirProdModal()">✚</span>
+    </header>
+    <div class="p-4">
+        <div class="p-3 mb-4 bg-teal-800 text-white rounded-xl shadow-inner flex justify-between items-center">
+            <span style="font-size: 11px; font-weight: bold; opacity: 0.8; text-transform: uppercase;">Investimento Estoque:</span>
+            <span id="f_total_estoque" class="font-black" style="font-size: 1.1rem; color: #fde047;">R$ 0,00</span>
+        </div>
+        <input type="text" oninput="drawProd(this.value)" placeholder="🔍 Buscar produto...">
+        <div id="list_prod_box" class="flex flex-col gap-2"></div>
+    </div>
+</div>
+
+<div id="config" class="screen">
+    <header class="teal-header p-4 flex items-center gap-4">
+        <span style="font-size: 1.5rem; cursor: pointer;" onclick="irPara('menu')">⬅</span>
+        <span class="font-bold italic" style="font-size: 1.25rem;">Configurações</span>
+    </header>
+    <div class="p-6 flex flex-col gap-6">
+        <button onclick="exportDB()" class="bg-teal-600 text-white p-4 shadow uppercase italic">Gerar Backup (.json)</button>
+        <input type="file" id="file_in" accept=".json" class="hidden" onchange="importDB(this)">
+        <button onclick="document.getElementById('file_in').click()" class="bg-red-600 text-white p-4 shadow uppercase italic">Restaurar Backup</button>
+    </div>
+</div>
+
+<div id="modalCli" class="modal" onclick="if(event.target == this) fecharModal('modalCli')">
+    <div class="bg-white p-6 rounded-2xl shadow-lg" style="width: 100%; max-width: 28rem;">
+        <h2 class="font-bold mb-4 uppercase" style="font-size: 1.25rem; color: #004d4d; border-bottom: 1px solid #e5e7eb;">Cliente</h2>
+        <input type="hidden" id="mc_id">
+        <input type="text" id="mc_nome" placeholder="Nome Completo">
+        <input type="text" id="mc_end" placeholder="Endereço">
+        <input type="text" id="mc_tel" placeholder="WhatsApp (DDD+Número)" oninput="mascaraTel(this)">
+        <div class="flex gap-2">
+            <button onclick="fecharModal('modalCli')" class="p-3" style="flex: 1; background-color: #e5e7eb;">FECHAR</button>
+            <button onclick="saveCli()" class="bg-teal-700 text-white p-3 uppercase" style="flex: 1;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalProd" class="modal" onclick="if(event.target == this) fecharModal('modalProd')">
+    <div class="bg-white p-6 rounded-2xl shadow-lg" style="width: 100%; max-width: 28rem;">
+        <h2 class="font-bold mb-4 uppercase" style="font-size: 1.25rem; color: #004d4d; border-bottom: 1px solid #e5e7eb;">Produto</h2>
+        <input type="hidden" id="mp_id">
+        <input type="text" id="mp_nome" placeholder="Nome do Produto">
+        <input type="number" id="mp_qtd" placeholder="Quantidade">
+        <div class="grid gap-2" style="grid-template-columns: 1fr 1fr;">
+            <input type="number" id="mp_val" step="0.01" placeholder="Venda">
+            <input type="number" id="mp_custo" step="0.01" placeholder="Custo">
+        </div>
+        <div class="flex gap-2">
+            <button onclick="fecharModal('modalProd')" class="p-3" style="flex: 1; background-color: #e5e7eb;">FECHAR</button>
+            <button onclick="saveProd()" class="bg-teal-700 text-white p-3 uppercase" style="flex: 1;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalVenda" class="modal" onclick="if(event.target == this) fecharModal('modalVenda')">
+    <div class="bg-white p-6 rounded-2xl shadow-lg" style="width: 100%; max-width: 28rem; overflow-y: auto; max-height: 95vh;">
+        <h2 class="font-bold mb-4 italic uppercase" style="font-size: 1.25rem; color: #004d4d; border-bottom: 1px solid #e5e7eb;">Ajustar Venda</h2>
+        <input type="hidden" id="mv_id">
+        <div class="p-3 mb-4" style="background-color: #f3f4f6; border-radius: 0.5rem; font-size: 0.875rem;">
+            <div class="flex justify-between pb-1" style="border-bottom: 1px solid #e5e7eb;"><span>Total:</span> <span id="mv_tot_txt" class="font-bold">0,00</span></div>
+            <div class="flex justify-between py-1" style="border-bottom: 1px solid #e5e7eb; color: #16a34a;"><span>Já pago:</span> <span id="mv_ja_pago_txt" class="font-bold">0,00</span></div>
+            <div class="flex justify-between pt-1 font-bold" style="color: #ef4444;"><span>Resta:</span> <span id="mv_resta_txt">0,00</span></div>
+        </div>
+        <label style="font-size: 11px; font-weight: bold; color: #ea580c; text-transform: uppercase;">💰 QUANTO PAGA AGORA? (R$)</label>
+        <input type="number" id="mv_quanto_paga" step="0.01" oninput="atualizarTrocoDinamico()" style="border-color: #fb923c; background-color: #fff7ed; font-weight: bold; font-size: 1.25rem; text-align: center;">
+        
+        <input type="text" id="mv_cli" placeholder="Cliente">
+        <div class="grid gap-2" style="grid-template-columns: 1fr 1fr;">
+            <input type="number" id="mv_tot" step="0.01" oninput="atualizarTrocoDinamico()" placeholder="Total">
+            <input type="number" id="mv_pago" readonly style="background-color: #e5e7eb; font-weight: bold;" placeholder="Pago">
+        </div>
+        <input type="date" id="mv_data">
+        <textarea id="mv_obs" placeholder="Observações"></textarea>
+        <div class="flex gap-2 mt-4">
+            <button onclick="fecharModal('modalVenda')" class="p-3" style="flex: 1; background-color: #e5e7eb;">CANCELAR</button>
+            <button onclick="salvarVendaManual()" class="bg-teal-700 text-white p-3 shadow uppercase" style="flex: 1;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- SEGURANÇA E UTILITÁRIOS ---
+    const esc = (str) => {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    };
+
+    const fmtMoeda = (val) => {
+        return Number(val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    // --- DB INICIALIZAÇÃO ---
+    let db = { clientes: [], produtos: [], vendas: [] };
+    const carregarDB = () => {
+        try {
+            const saved = localStorage.getItem('viva_dor_db');
+            if(saved) {
+                const parsed = JSON.parse(saved);
+                if(parsed && typeof parsed === 'object' && parsed.vendas) {
+                    db = parsed;
+                }
+            }
+        } catch(e) { 
+            console.error("Erro ao carregar DB", e);
+            toast("Erro ao carregar dados salvos.");
+        }
+    };
+    carregarDB();
+
+    let car = []; let tot = 0; let totCusto = 0; 
+    let currentTab = localStorage.getItem('viva_dor_last_tab') || 'pend';
+
+    function toast(msg) {
+        const t = document.getElementById("toast");
+        t.innerText = msg;
+        t.className = "show";
+        setTimeout(() => { t.className = ""; }, 2500);
+    }
+
+    function salvarDB() { 
+        try { 
+            localStorage.setItem('viva_dor_db', JSON.stringify(db)); 
+        } catch(e) { 
+            alert("Erro crítico: Memória do navegador cheia! Faça um backup e limpe vendas antigas."); 
+        }
+    }
+    
+    function irPara(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        const screen = document.getElementById(id);
+        if(screen) screen.classList.add('active'); 
+        
+        if(id === 'venda') {
+            document.getElementById('v_data_venda').valueAsDate = new Date();
+            resetItens();
+        }
+        if(id === 'lista_cli') drawCli(); 
+        if(id === 'lista_prod') drawProd(); 
+        if(id === 'relatorios') setTab(currentTab);
+        window.scrollTo(0,0);
+    }
+
+    function fecharModal(id) { 
+        const m = document.getElementById(id);
+        if(m) m.classList.remove('show'); 
+    }
+
+    function mascaraTel(i) {
+        let v = i.value.replace(/\D/g,'');
+        if(v.length > 11) v = v.substring(0, 11);
+        v = v.replace(/^(\d{2})(\d)/g,"($1) $2");
+        v = v.replace(/(\d)(\d{4})$/,"$1-$2");
+        i.value = v;
+    }
+
+    function sugerir(input, colecao, boxId) {
+        const texto = input.value.toLowerCase().trim();
+        const box = document.getElementById(boxId);
+        if (texto.length < 1) { box.style.display = 'none'; return; }
+        
+        const filtrados = db[colecao].filter(i => i.nome.toLowerCase().includes(texto)).slice(0, 5);
+        
+        if (filtrados.length > 0) {
+            box.innerHTML = filtrados.map(i => {
+                const infoExtra = i.qtd !== undefined ? ` (Estoque: ${i.qtd})` : '';
+                return `<div class="sugestao-item" onclick="selecionarSugestao('${esc(i.nome).replace(/'/g, "\\'")}', '${input.id}', '${boxId}')">${esc(i.nome.toUpperCase())}${infoExtra}</div>`;
+            }).join('');
+            box.style.display = 'block';
+        } else { box.style.display = 'none'; }
+    }
+
+    function selecionarSugestao(nome, inputId, boxId) {
+        document.getElementById(inputId).value = nome;
+        document.getElementById(boxId).style.display = 'none';
+    }
+
+    // --- CLIENTES ---
+    function abrirCliModal(id = null) {
+        const mc = document.getElementById('modalCli');
+        if(id) {
+            const c = db.clientes.find(x => x.id == id);
+            if(!c) return;
+            document.getElementById('mc_id').value = c.id;
+            document.getElementById('mc_nome').value = c.nome;
+            document.getElementById('mc_end').value = c.end || "";
+            document.getElementById('mc_tel').value = c.tel || "";
+        } else {
+            document.getElementById('mc_id').value = "";
+            ['mc_nome','mc_end','mc_tel'].forEach(i => document.getElementById(i).value = "");
+        }
+        mc.classList.add('show');
+    }
+
+    function saveCli() {
+        const nome = document.getElementById('mc_nome').value.trim();
+        if(!nome) return alert("Nome obrigatório!");
+        const id = document.getElementById('mc_id').value;
+        const dados = { 
+            nome, 
+            end: document.getElementById('mc_end').value.trim(), 
+            tel: document.getElementById('mc_tel').value.trim() 
+        };
+        if(id) {
+            const i = db.clientes.findIndex(x => x.id == id);
+            if(i !== -1) db.clientes[i] = { ...db.clientes[i], ...dados };
+        } else {
+            db.clientes.push({ id: Date.now(), ...dados });
+        }
+        salvarDB(); fecharModal('modalCli'); drawCli();
+        toast("Cliente salvo!");
+    }
+
+    function drawCli(b = "") {
+        const box = document.getElementById('list_cli_box'); box.innerHTML = "";
+        const busca = b.toLowerCase().trim();
+        db.clientes.filter(c => c.nome.toLowerCase().includes(busca) || (c.end && c.end.toLowerCase().includes(busca))).forEach(c => {
+            const numZap = c.tel ? c.tel.replace(/\D/g,'') : "";
+            const card = document.createElement('div');
+            card.className = "card flex justify-between items-center";
+            card.style.borderLeftColor = "#008080";
+            card.innerHTML = `
+                <div style="flex:1"><p class="font-bold uppercase">${esc(c.nome)}</p><p style="font-size: 10px; color: #6b7280;">${esc(c.end)}</p></div>
+                <div class="flex gap-2">
+                    <button onclick="if('${numZap}') window.open('https://wa.me/55${numZap}'); else alert('Sem número cadastrado');" style="color: #16a34a; background:transparent; font-size:1.2rem;">🟢</button>
+                    <button onclick="abrirCliModal(${c.id})" style="color: #3b82f6; background:transparent; font-size:1.2rem;">📝</button>
+                    <button onclick="del('clientes', ${c.id})" style="color: #fca5a5; background:transparent; font-size:1.2rem;">🗑️</button>
+                </div>`;
+            box.appendChild(card);
+        });
+    }
+
+    // --- PRODUTOS ---
+    function abrirProdModal(id = null) {
+        const mp = document.getElementById('modalProd');
+        if(id) {
+            const p = db.produtos.find(x => x.id == id);
+            if(!p) return;
+            document.getElementById('mp_id').value = p.id;
+            document.getElementById('mp_nome').value = p.nome;
+            document.getElementById('mp_qtd').value = p.qtd;
+            document.getElementById('mp_val').value = p.valor;
+            document.getElementById('mp_custo').value = p.custo || 0;
+        } else {
+            document.getElementById('mp_id').value = "";
+            ['mp_nome','mp_qtd','mp_val','mp_custo'].forEach(i => document.getElementById(i).value = "");
+        }
+        mp.classList.add('show');
+    }
+
+    function saveProd() {
+        const n = document.getElementById('mp_nome').value.trim();
+        if(!n) return alert("Nome obrigatório!");
+        const id = document.getElementById('mp_id').value;
+        const dados = { 
+            nome: n, 
+            qtd: parseInt(document.getElementById('mp_qtd').value || 0), 
+            valor: parseFloat(document.getElementById('mp_val').value || 0), 
+            custo: parseFloat(document.getElementById('mp_custo').value || 0) 
+        };
+        if(id) {
+            const i = db.produtos.findIndex(x => x.id == id);
+            if(i !== -1) db.produtos[i] = { ...db.produtos[i], ...dados };
+        } else {
+            db.produtos.push({ id: Date.now(), ...dados });
+        }
+        salvarDB(); fecharModal('modalProd'); drawProd();
+        toast("Produto salvo!");
+    }
+
+    function drawProd(b = "") {
+        const box = document.getElementById('list_prod_box'); box.innerHTML = "";
+        let totalCustoEstoque = 0;
+        db.produtos.filter(p => p.nome.toLowerCase().includes(b.toLowerCase().trim())).forEach(p => {
+            totalCustoEstoque += (parseFloat(p.custo) || 0) * (parseInt(p.qtd) || 0);
+            
+            let alerta = p.qtd <= 2 ? `<span class="low-stock-alert">${p.qtd <= 0 ? 'ZERADO' : 'BAIXO'}</span>` : '';
+            const card = document.createElement('div');
+            card.className = "card flex justify-between items-center";
+            card.style.borderLeftColor = "#f97316";
+            card.innerHTML = `
+                <div style="flex:1"><p class="font-bold uppercase">${esc(p.nome)} ${alerta}</p><p class="text-teal-700" style="font-size: 0.75rem; font-weight: bold;">R$ ${fmtMoeda(p.valor)} | Estoque: ${p.qtd}</p></div>
+                <div class="flex gap-2">
+                    <button onclick="abrirProdModal(${p.id})" style="color: #3b82f6; background:transparent; font-size:1.2rem;">📝</button>
+                    <button onclick="del('produtos', ${p.id})" style="color: #fca5a5; background:transparent; font-size:1.2rem;">🗑️</button>
+                </div>`;
+            box.appendChild(card);
+        });
+        document.getElementById('f_total_estoque').innerText = `R$ ${fmtMoeda(totalCustoEstoque)}`;
+    }
+
+    // --- VENDA ---
+    function addCarrinho() {
+        const avNome = document.getElementById('v_prod_avulso').value.trim();
+        const avQtd = parseInt(document.getElementById('v_qtd_avulso').value || 0);
+        const avVal = parseFloat(document.getElementById('v_val_avulso').value || 0);
+        
+        if(avNome && avQtd > 0) {
+            const sub = Number((avQtd * avVal).toFixed(2));
+            car.push({ n: avNome + " (Extra)", q: avQtd, sub: sub, custo: 0, tipo: 'avulso' });
+            tot = Number((tot + sub).toFixed(2));
+            ['v_prod_avulso','v_qtd_avulso','v_val_avulso'].forEach(i=>document.getElementById(i).value="");
+        } else {
+            const pn = document.getElementById('v_prod').value.trim();
+            const q = parseInt(document.getElementById('v_qtd').value || 0);
+            const p = db.produtos.find(x => x.nome.toLowerCase() === pn.toLowerCase());
+            if(p && q > 0) {
+                if(p.qtd < q) return alert("Estoque insuficiente! Disponível: " + p.qtd);
+                const sub = Number((q * p.valor).toFixed(2)); 
+                const subCusto = Number(((p.custo || 0) * q).toFixed(2));
+                car.push({ n: p.nome, q, sub, custo: subCusto, tipo: 'estoque', idProd: p.id }); 
+                tot = Number((tot + sub).toFixed(2)); 
+                totCusto = Number((totCusto + subCusto).toFixed(2));
+                document.getElementById('v_prod').value = ""; document.getElementById('v_qtd').value = "";
+            } else if (pn !== "") {
+                alert("Produto não encontrado no estoque ou quantidade inválida.");
+            }
+        }
+        drawCarrinho();
+    }
+
+    function drawCarrinho() {
+        const box = document.getElementById('itens_venda'); box.innerHTML = "";
+        car.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = "flex justify-between items-center py-1";
+            div.style.borderBottom = "1px solid #e5e7eb";
+            div.innerHTML = `
+                <span style="font-size:12px" class="${item.tipo === 'avulso' ? 'text-orange-600' : 'text-teal-700'}">${item.tipo === 'avulso' ? '🎁' : '✅'} ${item.q}x ${esc(item.n)} (R$ ${fmtMoeda(item.sub)})</span>
+                <button onclick="removeItemCarrinho(${index})" style="color: #f87171; background:transparent; padding:4px">✕</button>`;
+            box.appendChild(div);
+        });
+        document.getElementById('total_venda_txt').innerText = `R$ ${fmtMoeda(tot)}`;
+    }
+
+    function removeItemCarrinho(idx) {
+        tot = Number((tot - car[idx].sub).toFixed(2));
+        totCusto = Number((totCusto - (car[idx].custo || 0)).toFixed(2));
+        car.splice(idx, 1);
+        drawCarrinho();
+    }
+
+    function resetItens() { car = []; tot = 0; totCusto = 0; drawCarrinho(); }
+
+    function finalizar(pagoTotal) {
+        const cli = document.getElementById('v_cli').value.trim();
+        const dataVenc = document.getElementById('v_venc_calendario').value;
+        const dataVendaRaw = document.getElementById('v_data_venda').value;
+        
+        if(!cli) return alert("Por favor, selecione um cliente!");
+        if(car.length === 0) return alert("Carrinho vazio!");
+        if(!pagoTotal && !dataVenc) return alert("Vendas a prazo exigem data de vencimento!");
+
+        const dataVendaFormatada = dataVendaRaw ? dataVendaRaw.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR');
+        
+        // Validação final de estoque antes de salvar
+        for(let item of car) {
+            if(item.tipo === 'estoque') {
+                const p = db.produtos.find(x => x.id == item.idProd);
+                if(p && p.qtd < item.q) return alert(`Erro de última hora: O produto ${p.nome} não tem estoque suficiente.`);
+            }
+        }
+
+        car.forEach(item => { 
+            if(item.tipo === 'estoque') { 
+                const prod = db.produtos.find(p => p.id == item.idProd); 
+                if(prod) prod.qtd -= item.q; 
+            } 
+        });
+
+        const valorPagoInicial = pagoTotal ? tot : 0;
+
+        db.vendas.push({ 
+            id: Date.now(), 
+            data: dataVendaFormatada, 
+            data_pagamento: pagoTotal ? new Date().toLocaleDateString('pt-BR') : '', 
+            cliente: cli, 
+            total: tot, 
+            custo_total: totCusto,
+            pago: valorPagoInicial, 
+            pago_recente: valorPagoInicial, 
+            restante: pagoTotal ? 0 : tot, 
+            resumo: car.map(i=>`${i.q}x ${i.n}`).join(' | '),
+            vencimento: pagoTotal ? '---' : dataVenc,
+            itens_obj: JSON.parse(JSON.stringify(car)), // Deep copy para segurança
+            lucro_contabilizado: false 
+        });
+        
+        salvarDB(); toast("Venda finalizada com sucesso!"); limparVenda(); irPara('relatorios');
+    }
+
+    function limparVenda() {
+        resetItens();
+        ['v_cli','v_prod','v_qtd','v_prod_avulso','v_qtd_avulso','v_val_avulso','v_venc_calendario'].forEach(i=> {
+            const el = document.getElementById(i);
+            if(el) el.value="";
+        });
+        document.getElementById('sug_cli').style.display = 'none';
+        document.getElementById('sug_prod').style.display = 'none';
+    }
+
+    // --- FINANCEIRO ---
+    function setTab(t) { 
+        currentTab = t; 
+        localStorage.setItem('viva_dor_last_tab', t);
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('tab-active')); 
+        const tabBtn = document.getElementById('tab_'+t);
+        if(tabBtn) tabBtn.classList.add('tab-active'); 
+        drawVendas(); 
+    }
+    
+    function drawVendas() {
+        const busca = document.getElementById('busca_venda').value.toLowerCase().trim();
+        const box = document.getElementById('list_vendas_box'); box.innerHTML = "";
+        const hoje_br = new Date().toLocaleDateString('pt-BR');
+        const hoje_iso = new Date().toISOString().split('T')[0];
+        
+        let rec_hoje = 0; let pend_hoje_atrasado = 0; let lucro_total_real = 0; let pend_geral = 0;
+
+        db.vendas.forEach(v => {
+            let lucroVenda = v.lucro_contabilizado ? (parseFloat(v.pago_recente) || 0) : Math.max(0, (parseFloat(v.pago) || 0) - (parseFloat(v.custo_total) || 0));
+            lucro_total_real += lucroVenda;
+
+            if (v.restante > 0.009) pend_geral += v.restante;
+            
+            const isFiadoAtrasadoOuHoje = (v.restante > 0.009) && (v.vencimento !== '---') && (v.vencimento <= hoje_iso);
+            if(isFiadoAtrasadoOuHoje) pend_hoje_atrasado += v.restante;
+
+            if(v.data === hoje_br || v.data_pagamento === hoje_br) rec_hoje += (parseFloat(v.pago_recente) || 0);
+
+            if(v.cliente.toLowerCase().includes(busca)) {
+                let isP = v.restante > 0.009;
+                let show = (currentTab==='all') || (currentTab==='pend'&&isP) || (currentTab==='paga'&&!isP) || (currentTab==='hoje'&&isFiadoAtrasadoOuHoje);
+                
+                if(show) {
+                    const card = document.createElement('div');
+                    card.className = `card flex flex-col ${isFiadoAtrasadoOuHoje ? 'vence-hoje-anim' : ''}`;
+                    card.style.borderRight = `8px solid ${isFiadoAtrasadoOuHoje ? '#f97316' : (isP?'#ef4444':'#16a34a')}`;
+                    card.innerHTML = `
+                        <div onclick="abrirVendaModal(${v.id})">
+                            <p style="font-size: 9px; color: #9ca3af; font-weight: bold;">${esc(v.data)} ${isFiadoAtrasadoOuHoje ? '<span style="color: #dc2626; margin-left: 0.5rem;">⚠️ PENDENTE/ATRASADO</span>' : ''}</p>
+                            <p class="font-black uppercase">${esc(v.cliente)}</p>
+                            <p style="font-size: 10px;">TOTAL: R$ ${fmtMoeda(v.total)} | FALTA: R$ ${fmtMoeda(v.restante)}</p>
+                        </div>
+                        <div class="flex gap-4" style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                            <button onclick="zapRecibo(${v.id})" style="background: transparent; font-size: 1.25rem;">🟢</button>
+                            <button onclick="del('vendas',${v.id})" style="background: transparent; font-size: 1.25rem;">🗑️</button>
+                        </div>`;
+                    box.appendChild(card);
+                }
+            }
+        });
+        document.getElementById('f_rec').innerText = `R$ ${fmtMoeda(rec_hoje)}`; 
+        document.getElementById('f_vence_hoje').innerText = `R$ ${fmtMoeda(pend_hoje_atrasado)}`;
+        document.getElementById('f_pen_total').innerText = `R$ ${fmtMoeda(pend_geral)}`;
+        document.getElementById('f_lucro').innerText = `R$ ${fmtMoeda(lucro_total_real)}`;
+    }
+
+    function zerarCaixa() { 
+        if(confirm("Deseja zerar o contador de recebidos de hoje? Isso não apaga as vendas, apenas reseta o resumo do dia.")) { 
+            db.vendas.forEach(v => { v.pago_recente = 0; v.data_pagamento = ''; }); 
+            salvarDB(); drawVendas(); 
+        } 
+    }
+
+    function zerarLucroManual() { 
+        if(confirm("Deseja zerar o contador de lucro? Use isso após retirar seu pró-labore.")) { 
+            db.vendas.forEach(v => { v.lucro_contabilizado = true; v.pago_recente = 0; });
+            salvarDB(); drawVendas(); 
+        } 
+    }
+
+    function abrirVendaModal(id) {
+        const v = db.vendas.find(x => x.id == id);
+        if(!v) return;
+        document.getElementById('mv_id').value = v.id;
+        document.getElementById('mv_cli').value = v.cliente;
+        document.getElementById('mv_tot').value = v.total;
+        document.getElementById('mv_pago').value = v.pago;
+        document.getElementById('mv_tot_txt').innerText = fmtMoeda(v.total);
+        document.getElementById('mv_ja_pago_txt').innerText = fmtMoeda(v.pago);
+        document.getElementById('mv_resta_txt').innerText = fmtMoeda(v.restante);
+        document.getElementById('mv_data').value = (v.vencimento && v.vencimento !== '---') ? v.vencimento : '';
+        document.getElementById('mv_obs').value = v.resumo || "";
+        document.getElementById('mv_quanto_paga').value = "";
+        document.getElementById('modalVenda').classList.add('show');
+    }
+
+    function atualizarTrocoDinamico() {
+        const t = parseFloat(document.getElementById('mv_tot').value || 0);
+        const jp = parseFloat(document.getElementById('mv_pago').value || 0);
+        const ag = parseFloat(document.getElementById('mv_quanto_paga').value || 0);
+        const resta = Math.max(0, t - (jp + ag));
+        document.getElementById('mv_resta_txt').innerText = fmtMoeda(resta);
+    }
+
+    function salvarVendaManual() {
+        const id = document.getElementById('mv_id').value;
+        const vIdx = db.vendas.findIndex(v => v.id == id);
+        if(vIdx === -1) return;
+        
+        const qp = parseFloat(document.getElementById('mv_quanto_paga').value || 0);
+        const novoTotal = parseFloat(document.getElementById('mv_tot').value || 0);
+        
+        db.vendas[vIdx].total = novoTotal;
+        db.vendas[vIdx].pago = Number((db.vendas[vIdx].pago + qp).toFixed(2));
+        
+        if(qp > 0.009) {
+            db.vendas[vIdx].pago_recente = Number(((db.vendas[vIdx].pago_recente || 0) + qp).toFixed(2));
+            db.vendas[vIdx].data_pagamento = new Date().toLocaleDateString('pt-BR');
+        }
+        
+        db.vendas[vIdx].restante = Number(Math.max(0, novoTotal - db.vendas[vIdx].pago).toFixed(2));
+        db.vendas[vIdx].vencimento = document.getElementById('mv_data').value || '---';
+        db.vendas[vIdx].resumo = document.getElementById('mv_obs').value;
+        
+        salvarDB(); fecharModal('modalVenda'); drawVendas();
+        toast("Venda atualizada!");
+    }
+
+    function del(col, id) { 
+        if(!confirm("Tem certeza que deseja excluir? Esta ação não pode ser desfeita.")) return;
+        if(col === 'vendas') {
+            const v = db.vendas.find(x => x.id == id);
+            if(v && v.itens_obj) {
+                v.itens_obj.forEach(it => { 
+                    if(it.tipo === 'estoque') { 
+                        let p = db.produtos.find(pr => pr.id == it.idProd); 
+                        if(p) p.qtd = (parseInt(p.qtd) || 0) + it.q; 
+                    } 
+                });
+            }
+        }
+        db[col] = db[col].filter(x=>x.id != id); 
+        salvarDB(); drawVendas(); drawCli(); drawProd(); 
+        toast("Excluído com sucesso!");
+    }
+
+    function zapRecibo(id) {
+        const v = db.vendas.find(x => x.id == id);
+        if(!v) return;
+        const cliObj = db.clientes.find(c => c.nome.toLowerCase() === v.cliente.toLowerCase());
+        const numZap = cliObj && cliObj.tel ? cliObj.tel.replace(/\D/g,'') : "";
+        const msg = encodeURIComponent(`*RECIBO - VIVA SEM DOR*\n\n*Cliente:* ${v.cliente}\n*Itens:* ${v.resumo}\n*Total:* R$ ${fmtMoeda(v.total)}\n*Valor Pago:* R$ ${fmtMoeda(v.pago)}\n*Falta:* R$ ${fmtMoeda(v.restante)}\n\nObrigado pela preferência!`);
+        window.open(numZap ? `https://wa.me/55${numZap}?text=${msg}` : `https://wa.me/?text=${msg}`);
+    }
+
+    function exportDB() { 
+        try {
+            const blob = new Blob([JSON.stringify(db, null, 2)], {type:"application/json"}); 
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); 
+            a.download=`backup_viva_${new Date().toISOString().split('T')[0]}.json`; a.click(); 
+        } catch (e) { alert("Erro ao gerar backup."); }
+    }
+    
+    function importDB(input) { 
+        if(!input.files || !input.files[0]) return;
+        const r = new FileReader(); 
+        r.onload=(e)=>{ 
+            try {
+                const json = JSON.parse(e.target.result); 
+                if(json && json.vendas && json.clientes && json.produtos) { 
+                    if(confirm("Isso substituirá todos os dados atuais. Continuar?")) {
+                        db = json; salvarDB(); toast("Dados restaurados!"); setTimeout(()=>location.reload(), 800); 
+                    }
+                } else { alert("Arquivo de backup inválido ou incompleto."); }
+            } catch(err) { alert("Erro ao ler arquivo: Formato JSON inválido."); }
+        }; 
+        r.readAsText(input.files[0]); 
+    }
+
+    // Inicialização
+    irPara('menu');
+</script>
+</body>
+</html>
